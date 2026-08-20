@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.vercel/
+.DS_Store
+DEMO_PREVIEW.html
+diamond-value-lab/
+value-lab/
+.vercel

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#081510" />
+  <title>Diamond Futures — MLB Career Simulator</title>
+  <meta name="description" content="Search an active MLB player and explore thousands of career futures with the proprietary CURVE Engine." />
+  <meta property="og:title" content="Diamond Futures" />
+  <meta property="og:description" content="One player. Thousands of careers. Explore the MLB career multiverse." />
+  <meta property="og:image" content="/og.png" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Diamond Futures home">
+      <span class="brand-mark" aria-hidden="true"><i></i></span>
+      <span>DIAMOND <b>FUTURES</b></span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#forecast">Forecast</a>
+      <a href="#twins">Twins</a>
+      <a href="#method">Method</a>
+    </nav>
+    <span class="model-pill"><span></span> CURVE 2026.1</span>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="kicker"><span>01</span> MLB CAREER MULTIVERSE</p>
+        <h1>One player.<br><em>Thousands</em> of careers.</h1>
+        <p class="hero-deck">Search any active MLB player. Our model separates talent, aging, playing time, and survival—then plays the future 5,000 times.</p>
+
+        <div class="search-shell" role="search">
+          <label for="playerSearch">Find an active player</label>
+          <div class="search-line">
+            <span class="search-icon" aria-hidden="true"></span>
+            <input id="playerSearch" type="search" placeholder="Try Shohei Ohtani" autocomplete="off" aria-describedby="searchHint" />
+            <button id="searchBtn" type="button">Search</button>
+          </div>
+          <p id="searchHint">Search by first or last name</p>
+          <div id="matches" class="matches" hidden></div>
+        </div>
+
+        <div class="quick-picks" aria-label="Quick player searches">
+          <span>QUICK START</span>
+          <button type="button" data-player="Shohei Ohtani">Ohtani</button>
+          <button type="button" data-player="Bobby Witt Jr.">Witt Jr.</button>
+          <button type="button" data-player="Paul Skenes">Skenes</button>
+          <button id="demoBtn" type="button">Sample future</button>
+        </div>
+      </div>
+
+      <aside class="hero-board" aria-label="How the model works">
+        <div class="board-top">
+          <span>LIVE MODEL BOARD</span>
+          <span class="live-dot">READY</span>
+        </div>
+        <div class="diamond-field" aria-hidden="true">
+          <div class="field-ring ring-a"></div>
+          <div class="field-ring ring-b"></div>
+          <div class="field-diamond"><i></i><i></i><i></i><i></i></div>
+          <div class="orbit orbit-a"><span>AGE</span></div>
+          <div class="orbit orbit-b"><span>SKILL</span></div>
+          <div class="orbit orbit-c"><span>ROLE</span></div>
+        </div>
+        <ol class="model-steps">
+          <li><b>01</b><span>Estimate talent <small>MLB + Statcast</small></span></li>
+          <li><b>02</b><span>Apply aging <small>25,222 historical age-seasons</small></span></li>
+          <li><b>03</b><span>Play the future <small>Correlated Monte Carlo paths</small></span></li>
+        </ol>
+      </aside>
+    </section>
+
+    <section class="ticker" aria-label="Model facts">
+      <div><strong>5,000</strong><span>CAREERS / RUN</span></div>
+      <div><strong>1980–2025</strong><span>TRAINING WINDOW</span></div>
+      <div><strong>2</strong><span>ROLE-SPECIFIC MODELS</span></div>
+      <div><strong>5</strong><span>DATA LAYERS</span></div>
+    </section>
+
+    <div id="loadingPanel" class="loading-panel shell" hidden aria-live="polite">
+      <div class="loader-diamond" aria-hidden="true"><span></span></div>
+      <div><p class="kicker">RUNNING THE MULTIVERSE</p><h2 id="loadingTitle">Building 5,000 futures…</h2><p id="loadingDetail">Reading recent form, Statcast traits, and historical age transitions.</p></div>
+    </div>
+
+    <section id="forecast" class="forecast shell" hidden>
+      <div class="player-ribbon">
+        <div class="player-identity">
+          <div class="headshot-wrap"><img id="playerHeadshot" alt="" /><span id="playerInitials"></span></div>
+          <div>
+            <p id="sourceEyebrow" class="kicker"><span>02</span> CAREER OUTLOOK</p>
+            <h2 id="playerName">Player</h2>
+            <p id="playerMeta">Team · Position · Age</p>
+          </div>
+        </div>
+        <div class="ribbon-actions">
+          <div id="roleSwitch" class="segmented" hidden aria-label="Choose player role"></div>
+          <button id="pinBtn" class="ghost-button" type="button">＋ Pin to duel</button>
+          <button id="shareBtn" class="light-button" type="button">Share forecast ↗</button>
+        </div>
+      </div>
+
+      <div class="forecast-intro">
+        <div>
+          <p class="section-label">THE READ</p>
+          <h3 id="forecastHeadline">A star-shaped path with real late-career variance.</h3>
+        </div>
+        <div class="confidence-block">
+          <span>MODEL CONFIDENCE</span>
+          <strong id="confidenceValue">—</strong>
+          <div class="confidence-track"><i id="confidenceBar"></i></div>
+        </div>
+      </div>
+
+      <div id="summaryCards" class="summary-grid"></div>
+
+      <div class="primary-grid">
+        <article class="panel trajectory-panel">
+          <div class="panel-head">
+            <div><p class="section-label">CAREER TRAJECTORY</p><h3 id="chartTitle">Annual CURVE Value</h3></div>
+            <label class="metric-select">View
+              <select id="chartMetric">
+                <option value="value">Annual value</option>
+                <option value="workload">Playing time</option>
+                <option value="rate">Rate performance</option>
+                <option value="count">Counting stat</option>
+              </select>
+            </label>
+          </div>
+          <div class="chart-legend"><span class="legend-band">10th–90th percentile</span><span class="legend-line">Median path</span></div>
+          <div class="canvas-wrap"><canvas id="trajectoryChart" role="img" aria-label="Projected career trajectory"></canvas><div id="chartTooltip" class="chart-tooltip" hidden></div></div>
+          <p class="chart-note">The widening band is uncertainty—not a promise. Retired simulations count as zero playing time.</p>
+        </article>
+
+        <aside class="panel lab-panel">
+          <div class="panel-head"><div><p class="section-label">WHAT-IF LAB</p><h3>Change the assumptions</h3></div><button id="resetLab" class="text-button" type="button">Reset</button></div>
+          <div class="preset-row">
+            <button type="button" data-preset="breakout">Breakout</button>
+            <button type="button" data-preset="healthy">Healthy</button>
+            <button type="button" data-preset="rough">Rough road</button>
+          </div>
+          <div class="sliders">
+            <label><span>Skill development <output id="skillOutput">Baseline</output></span><input id="skillSlider" type="range" min="-12" max="12" value="0" /></label>
+            <label><span>Availability <output id="availabilityOutput">Baseline</output></span><input id="availabilitySlider" type="range" min="-25" max="25" value="0" /></label>
+            <label><span>Career longevity <output id="longevityOutput">Baseline</output></span><input id="longevitySlider" type="range" min="-20" max="20" value="0" /></label>
+            <label><span>Run environment <output id="environmentOutput">Neutral</output></span><input id="environmentSlider" type="range" min="-12" max="12" value="0" /></label>
+          </div>
+          <button id="rerunBtn" class="rerun-button" type="button"><span>Run 5,000 new futures</span><b>→</b></button>
+          <p class="lab-note">Every rerun uses the same player evidence and a new set of explicit assumptions.</p>
+        </aside>
+      </div>
+
+      <div class="insight-grid">
+        <article class="panel skill-panel">
+          <div class="panel-head"><div><p class="section-label">PLAYER DNA</p><h3>Skills entering the model</h3></div><span class="scale-note">20–80 scale</span></div>
+          <div id="skillBars" class="skill-bars"></div>
+        </article>
+        <article class="panel paths-panel">
+          <div class="panel-head"><div><p class="section-label">THREE PLAUSIBLE ENDINGS</p><h3>Career outcomes</h3></div></div>
+          <div id="pathCards" class="path-cards"></div>
+        </article>
+      </div>
+
+      <section class="milestone-section">
+        <div class="section-head"><div><p class="kicker"><span>03</span> LEGACY ODDS</p><h2>What stays within reach?</h2></div><p>Probabilities across every simulated career, including paths where playing time disappears early.</p></div>
+        <div id="milestoneGrid" class="milestone-grid"></div>
+      </section>
+
+      <section id="twins" class="twins-section">
+        <div class="section-head"><div><p class="kicker"><span>04</span> HISTORICAL TWIN MACHINE</p><h2>Careers that stood here before.</h2></div><p>Nearest age-matched seasons by performance shape, workload, and role—not a hand-picked comp list.</p></div>
+        <div id="compsGrid" class="comps-grid"></div>
+      </section>
+
+      <div class="detail-grid">
+        <article class="panel drivers-panel">
+          <div class="panel-head"><div><p class="section-label">WHY THIS FORECAST?</p><h3>Signals moving the curve</h3></div></div>
+          <div id="driversList" class="drivers-list"></div>
+        </article>
+        <article class="panel season-panel">
+          <div class="panel-head"><div><p class="section-label">SEASON LEDGER</p><h3>Recent actuals + median future</h3></div><button id="downloadBtn" class="text-button" type="button">Download CSV</button></div>
+          <div class="table-wrap"><table><thead id="seasonTableHead"></thead><tbody id="seasonTableBody"></tbody></table></div>
+        </article>
+      </div>
+
+      <section id="duel" class="duel-section" hidden>
+        <div class="section-head"><div><p class="kicker"><span>05</span> CAREER DUEL</p><h2>Two futures. One scale.</h2></div><button id="clearDuel" class="ghost-button" type="button">Clear duel</button></div>
+        <div id="duelGrid" class="duel-grid"></div>
+      </section>
+    </section>
+
+    <section id="method" class="method-section">
+      <div class="shell method-grid">
+        <div>
+          <p class="kicker"><span>05</span> THE CURVE ENGINE</p>
+          <h2>Transparent enough to challenge.</h2>
+          <p>Diamond Futures does not reprint a published projection. It estimates present talent, applies age-specific changes learned from historical careers, models playing time and MLB survival separately, and preserves correlated outcomes across each simulated path.</p>
+        </div>
+        <ol>
+          <li><b>01</b><span><strong>Talent now</strong>Three-season recency weighting, sample-size regression, and Statcast expected performance.</span></li>
+          <li><b>02</b><span><strong>Aging next</strong>Empirical transitions trained on modern SABR/Lahman player-seasons.</span></li>
+          <li><b>03</b><span><strong>Role & survival</strong>Playing time, role security, and exit from MLB are modeled separately from skill.</span></li>
+          <li><b>04</b><span><strong>Uncertain futures</strong>5,000 correlated simulations produce ranges and milestone odds.</span></li>
+        </ol>
+      </div>
+      <div class="shell source-ledger">
+        <div class="backtest-board">
+          <div><p class="kicker"><span>06</span> MODEL SCORECARD</p><h3>Held out. Then measured.</h3><p id="backtestDescription">One-year forecasts evaluated on seasons the age curves had not seen during training.</p></div>
+          <div id="backtestStats" class="backtest-stats"></div>
+        </div>
+        <div class="ledger-head"><span>DATA PROVENANCE</span><span>LIVE STATUS</span></div>
+        <div id="sourceRows"></div>
+        <p class="legal-note">CURVE Value is a transparent, WAR-like internal estimate—not FanGraphs WAR or Baseball-Reference WAR. Diamond Futures is an independent educational project and is not affiliated with MLB, Baseball Savant, FanGraphs, SABR, or Chadwick Bureau.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>
