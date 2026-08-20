@@ -64,4 +64,6 @@ python -m pytest tests -q
 
 Import this project into Vercel or run `vercel` from the project root. Vercel recognizes the FastAPI `app` in `index.py` as a Python Function.
 
+The `main` branch is connected to the production Vercel project, so future pushes deploy automatically.
+
 The generated model assets are bundled read-only with the deployment. Live-source caching uses temporary storage only when available, so a cache failure never prevents a simulation.
