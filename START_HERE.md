@@ -2,6 +2,8 @@
 
 Diamond Futures is already structured for Vercel and intentionally uses a simple FastAPI + plain JavaScript architecture.
 
+**Live site:** [diamond-futures.vercel.app](https://diamond-futures.vercel.app)
+
 ## First local run
 
 1. Activate the Python environment: `source .venv/bin/activate`
